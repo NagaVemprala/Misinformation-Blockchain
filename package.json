@@ -16,8 +16,7 @@
     "web-vitals": "^2.1.4",
     "web3": "^4.2.0"
   },
-  "scripts": { "start": "node ./node_modules/react-scripts/bin/react-scripts.js start" },
-  "scriptsss": {
+  "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
