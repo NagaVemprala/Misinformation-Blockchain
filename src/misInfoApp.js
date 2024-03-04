@@ -100,6 +100,19 @@ const appABI = [
 	},
 	{
 		"inputs": [],
+		"name": "currentDistributionStatus",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "debunkerRewards",
 		"outputs": [],
 		"stateMutability": "payable",
