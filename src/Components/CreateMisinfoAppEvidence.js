@@ -21,7 +21,7 @@ function CreateMisinformationEvidence(props) {
 
     return (
         <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 2fr", gap: "1px" }}>
-            <label htmlFor="misInformationEvidence" style={{ fontSize: "20px", color: "#5d0e8b", textAlign: "left" }}> Post evidence to debunk probable misinformation! </label>
+            <label htmlFor="misInformationEvidence" style={{ fontSize: "16px", color: "#177B7B", textAlign: "left" }}> Post evidence to debunk probable misinformation! </label>
             <input
                 type="text"
                 id="misInformationEvidence"
@@ -31,11 +31,10 @@ function CreateMisinformationEvidence(props) {
             />
             <br />
             
-            <div>
-                <br></br>
-                <button onClick={handlePost}>Submit</button>
-            </div>
 
+                <br></br>
+                <div><button onClick={handlePost} className="button is-link is-medium"> Submit</button></div>
+                
         </div>
 
     );
