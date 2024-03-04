@@ -13,16 +13,12 @@ function App() {
   const [misinfoContract, setMisinfoContract] = useState();
   const [signer, setSigner] = useState();
   const [misInfoTopicAddresses, setMisInforTopicAddresses] = useState([]);
-  const [misInfoTopicDetails, setMisInforTopicDetails] = useState([]);
-  const [misInfoTopicPosts, setMisInforTopicPosts] = useState([]);
   const [postEvidences, setPostEvidences] = useState([]);
   const [myObjects, setMyObjects] = useState([]);
-  const [rewardObjects, setRewardObjects] = useState([10, 'Hello']);
+  const [rewardObjects, setRewardObjects] = useState([0, '']);
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  const [rating, setRating] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedRating, setSelectedRating] = useState(rating || 0); // Use provided rating or 0
-
+  const [currentlyDisplayedEvidences, setCurrentlyDisplayedEvidences] = useState(0);
 
   useEffect(() => {
     getCurrentWalletConnected();
@@ -99,21 +95,19 @@ function App() {
   };
 
   const getContractAddresses = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const misInfoContractSigner = misinfoContract.connect(signer);
     const misinformationContracts = await misInfoContractSigner.getDeployedMisInfos();
     setMisInforTopicAddresses(misinformationContracts);
     handleUpdateString(signer);
-
   }
 
   const fetchAvailableMisInfos = async (address, signer, item) => {
 
     setSelectedItemIndex(item);
-    // console.log('item: ', item, 'selectedItemIndex ', selectedItemIndex);
 
     const tempObject = { rewardValue: 0, misInfoDetailedMsg: "" };
     const tempPosts = { postMsg: "", postAddress: "" };
+    //const tempArrayOfPosts = [];
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const misInfoTopicContract = misInfoApp(provider, address);
@@ -121,23 +115,43 @@ function App() {
     const misInformationTopic = await misInfoTopicSigner.sendMisinfoAppDetails();
     const misInformationEvidenceAddresses = await misInfoTopicSigner.sendDebunkingUserAddresses();
     console.log("misInformationEvidenceAddresses: ", misInformationEvidenceAddresses);
-    setPostEvidences([]);
-    if (misInformationEvidenceAddresses.length > 0) {
-      for (let i = 0; i < misInformationEvidenceAddresses.length; i++) {
-        tempPosts.postAddress = misInformationEvidenceAddresses[i];
-        tempPosts.postMsg = await misInfoTopicSigner.sendDebunkingUserStruct(misInformationEvidenceAddresses[i]);
-        console.log("tempPosts: ", tempPosts);
-        setPostEvidences((postEvidences) => [...postEvidences, tempPosts]);
-      }
-      console.log("postEvidences: ", postEvidences);
+    //setPostEvidences([]);
+    if (
+      (misInformationEvidenceAddresses.length > 0) && (currentlyDisplayedEvidences < misInformationEvidenceAddresses.length)
+    ) {
+      const i = currentlyDisplayedEvidences;
+
+      //for (let i = 0; i < misInformationEvidenceAddresses.length; i++) {
+      //  tempPosts.postAddress = misInformationEvidenceAddresses[i];
+      //  tempPosts.postMsg = await misInfoTopicSigner.sendDebunkingUserStruct(misInformationEvidenceAddresses[i]);
+      tempPosts.postAddress = misInformationEvidenceAddresses[i];
+      tempPosts.postMsg = await misInfoTopicSigner.sendDebunkingUserStruct(misInformationEvidenceAddresses[i]);
+      //  console.log("tempPosts: ", tempPosts);
+      console.log("Before something: ", postEvidences);
+      setPostEvidences((postEvidences) => [...postEvidences, tempPosts]);
+      setCurrentlyDisplayedEvidences(currentlyDisplayedEvidences + 1);
+      console.log("After something: ", postEvidences);
+      //  tempArrayOfPosts.push(tempPosts);
+      //console.log(tempArrayOfPosts);
     }
+    //setPostEvidences(tempArrayOfPosts);
+    //console.log("postEvidences: ", tempArrayOfPosts);
+    //}
 
     tempObject.misInfoDetailedMsg = misInformationTopic[0];
     tempObject.rewardValue = misInformationTopic[1];
 
-    setRewardObjects([misInformationTopic[0], misInformationTopic[1]]); // Append to the existing array
-    console.log("setRewardObjects: ", rewardObjects);
+    setRewardObjects([misInformationTopic[0], misInformationTopic[1]]);
   };
+
+  const declareRewards = async (address) => {
+    console.log(address);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const misInfoTopicContract = misInfoApp(provider, address);
+    const misInfoTopicSigner = misInfoTopicContract.connect(signer);
+    const updateDebunkerRatings = await misInfoTopicSigner.updateDebunkerRatings();
+    console.log(updateDebunkerRatings);
+  }
 
   const handleUpdateString = async (signer) => {
 
@@ -145,36 +159,25 @@ function App() {
       .fill()
       .map(() => ({ rewardValue: 0, misInfoDetailedMsg: "" }));
 
-    //const tempObjects = { rewardValue: 0, misInfoDetailedMsg: ""};
-
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     for (let i = 0; i < misInfoTopicAddresses.length; i++) {
       const contract = misInfoTopicAddresses[i];
+
       /* local contract instance */
       const misInfoTopicContract = misInfoApp(provider, contract);
       const misInfoTopicSigner = misInfoTopicContract.connect(signer);
       const misInformationTopic = await misInfoTopicSigner.sendMisinfoAppDetails();
-      //console.log(misInformationTopic[1]);
-      //
+
       tempObjects[i].misInfoDetailedMsg = misInformationTopic[0];
       tempObjects[i].rewardValue = misInformationTopic[1];
-      //console.log(tempObjects[i]); // Access object properties
+
       setMyObjects((myObjects) => [...myObjects, tempObjects[i]]);
 
     }
-    //setMyObjects(tempObjects);
-    //setMyObjects([...myObjects, tempObjects]);
-    //console.log(tempObjects);
-  };
-
-  const handlePost = async (signer) => {
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log(provider);
   };
 
   const handleStarClick = async (address, newRating) => {
-    setRating(newRating);
+    // setRating(newRating);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const _signer = await provider.getSigner();
     const misInfoAppContract = misInfoApp(provider, address);
@@ -220,11 +223,15 @@ function App() {
             <h1 className="title is-1">Possible Misinformation that requires debunking! </h1>
             <p>Post evidence information if you believe this event is around a misinformation.</p>
 
-            <CreateMisinformationApp />
+            <CreateMisinformationApp fromAddress={walletAddress} />
+          </div>
 
+          <div className="container has-text-centered main-content">
             <div className="box address-box">
               <div className="container">
+
                 <div className="row">
+
                   <button onClick={getContractAddresses} className="button is-link is-medium">
                     Refresh to see existing reward scopes
                   </button>
@@ -232,14 +239,20 @@ function App() {
 
                   <ul className="list">
                     {misInfoTopicAddresses.map((address, item) => <div>
-                      <li className="list-item" key={item}>{address}</li>
+                      <li className="list-item" key={item}>Unverified Claim # {item + 1}</li>
                       <button onClick={() => fetchAvailableMisInfos(address, signer, item)}>Click to fetch the misinformation post!</button>
 
                       {selectedItemIndex >= 0 && selectedItemIndex === item && (
                         <div>
-                          <p>Reward value: {rewardObjects[0]}</p>
-                          <p>Reward Message: {rewardObjects[1]}</p>
-
+                          <p className="bold-p">Claim: {rewardObjects[0]}</p>
+                          <p className="bold-p">Potential Reward: {rewardObjects[1]}</p>
+                          <div id="navbarMenu" className="navbar-menu">
+                            <div className="navbar-item is-align-items-center">
+                              <button className="button is-primary declare-rewards" onClick={() => declareRewards(address)}>
+                                <span className="is-link has-text-weight-bold"> Declare Rewards! </span>
+                              </button>
+                            </div>
+                          </div>
                           <CreateMisinformationEvidence address={address} />
                         </div>
 
@@ -247,16 +260,15 @@ function App() {
 
                       <div>
                         {postEvidences.length > 0 && selectedItemIndex >= 0 && selectedItemIndex === item && (
-                          <ul>
+                          <ul className="list-container">
                             {postEvidences.map((obj, item) => (
-                              <li key={item}>{obj.postMsg}
+                              <li key={item} className="list-item">{obj.postMsg}
                                 <div className="star-rating">
-                                  // obj.postAddress is also available.
                                   {[...Array(5)].map((star, index) => {
                                     return (
                                       <span
                                         key={index}
-                                        className={index < rating ? 'on' : 'off'}
+                                        className={index < star ? 'on' : 'off'}
                                         onClick={() => handleStarClick(obj.postAddress, index + 1)}
                                       >
                                         ★
@@ -270,9 +282,9 @@ function App() {
                                     className="star-rating-modal"
                                   >
                                     <div>
-                                    <h2 className="modal-content-h2">You rated {rating} stars!</h2>
-                                    <br></br>
-                                    <button onClick={handlePopupClose} className="modal-content">Close</button>
+                                      <h2 className="modal-content-h2">Your rating has been posted to Blockchain...Thank you for your efforts!</h2>
+                                      <br></br>
+                                      <button onClick={handlePopupClose} className="modal-content">Close</button>
                                     </div>
                                   </ReactModal>
                                 </div>
@@ -287,8 +299,6 @@ function App() {
                     </div>
                     )}
                   </ul>
-
-                  <button onClick={() => handlePost(signer)}>Test only</button>
 
                 </div>
               </div>
