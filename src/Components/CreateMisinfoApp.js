@@ -19,6 +19,9 @@ function CreateMisinformationApp() {
         setMisInformationMsg(event.target.value);
     };
 
+    //const gasPrice = ethers.utils.parseUnits("100", "gwei");
+    //const rvalue = ethers.utils.parseEther("0.002")
+    
     const handlePost = async () => {
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -26,6 +29,11 @@ function CreateMisinformationApp() {
         const misInfoFactoryContract = misInfo(provider);
         const misInfoFactorySigner = misInfoFactoryContract.connect(_signer);
         const misInfoAppResponse = await misInfoFactorySigner.createMisinformationApp(rewardValue, misInformationMsg, minRating);
+        //    {
+        //        value: rvalue,
+        //        gasLimit: 466669,
+        //        gasPrice: gasPrice,
+        //      });
         console.log(misInfoAppResponse);
     };
 
@@ -58,10 +66,7 @@ function CreateMisinformationApp() {
                 style={{ backgroundColor: "white", padding: "10px", border: "1px solid #ccc", width: "500px" }}
             />
 
-            <div>
-                <br></br>
-                <button onClick={handlePost}>Submit</button>
-            </div>
+            <div><button onClick={handlePost} className="button is-link is-medium">Submit</button></div>
 
         </div>
 
