@@ -1,24 +1,6 @@
 import { ethers } from "ethers";
 const appABI = [
 	{
-		"inputs": [],
-		"stateMutability": "payable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "contractBalance",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "uint16",
@@ -43,25 +25,17 @@ const appABI = [
 	},
 	{
 		"inputs": [],
+		"stateMutability": "payable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
 		"name": "getDeployedMisInfos",
 		"outputs": [
 			{
 				"internalType": "address[]",
 				"name": "",
 				"type": "address[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address payable",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -97,7 +71,7 @@ const appABI = [
 
 const factoryContract = (provider) => {
     return new ethers.Contract(
-        "0x6e20c06339a18abb9a8d826ab84a13c0823ebccc",
+        "0x1abd94ce1f90fcf45f457be42ced0c2427b9ac01",
 		appABI,
 		provider
     )
