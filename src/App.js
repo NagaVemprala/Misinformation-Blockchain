@@ -18,7 +18,6 @@ function App() {
   const [rewardObjects, setRewardObjects] = useState([0, '']);
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const [currentlyDisplayedEvidences, setCurrentlyDisplayedEvidences] = useState(0);
 
   useEffect(() => {
     getCurrentWalletConnected();
@@ -104,39 +103,27 @@ function App() {
   const fetchAvailableMisInfos = async (address, signer, item) => {
 
     setSelectedItemIndex(item);
+    //setCurrentMisInfoAddress(address);
 
     const tempObject = { rewardValue: 0, misInfoDetailedMsg: "" };
-    const tempPosts = { postMsg: "", postAddress: "" };
-    //const tempArrayOfPosts = [];
+    const tempPosts = [];
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const misInfoTopicContract = misInfoApp(provider, address);
     const misInfoTopicSigner = misInfoTopicContract.connect(signer);
     const misInformationTopic = await misInfoTopicSigner.sendMisinfoAppDetails();
     const misInformationEvidenceAddresses = await misInfoTopicSigner.sendDebunkingUserAddresses();
-    console.log("misInformationEvidenceAddresses: ", misInformationEvidenceAddresses);
-    //setPostEvidences([]);
-    if (
-      (misInformationEvidenceAddresses.length > 0) && (currentlyDisplayedEvidences < misInformationEvidenceAddresses.length)
-    ) {
-      const i = currentlyDisplayedEvidences;
 
-      //for (let i = 0; i < misInformationEvidenceAddresses.length; i++) {
-      //  tempPosts.postAddress = misInformationEvidenceAddresses[i];
-      //  tempPosts.postMsg = await misInfoTopicSigner.sendDebunkingUserStruct(misInformationEvidenceAddresses[i]);
-      tempPosts.postAddress = misInformationEvidenceAddresses[i];
-      tempPosts.postMsg = await misInfoTopicSigner.sendDebunkingUserStruct(misInformationEvidenceAddresses[i]);
-      //  console.log("tempPosts: ", tempPosts);
-      console.log("Before something: ", postEvidences);
-      setPostEvidences((postEvidences) => [...postEvidences, tempPosts]);
-      setCurrentlyDisplayedEvidences(currentlyDisplayedEvidences + 1);
-      console.log("After something: ", postEvidences);
-      //  tempArrayOfPosts.push(tempPosts);
-      //console.log(tempArrayOfPosts);
+    setPostEvidences([]);
+    if (misInformationEvidenceAddresses.length > 0) {
+      for (let i = 0; i < misInformationEvidenceAddresses.length; i++) {
+        const postAddress = misInformationEvidenceAddresses[i];
+        const postMsg = await misInfoTopicSigner.sendDebunkingUserStruct(misInformationEvidenceAddresses[i]);
+        tempPosts.push({postAddress, postMsg}); 
+        console.log("tempPosts: ", tempPosts);
+      }
+      setPostEvidences(tempPosts);
     }
-    //setPostEvidences(tempArrayOfPosts);
-    //console.log("postEvidences: ", tempArrayOfPosts);
-    //}
 
     tempObject.misInfoDetailedMsg = misInformationTopic[0];
     tempObject.rewardValue = misInformationTopic[1];
@@ -172,6 +159,7 @@ function App() {
       tempObjects[i].rewardValue = misInformationTopic[1];
 
       setMyObjects((myObjects) => [...myObjects, tempObjects[i]]);
+      console.log(myObjects);
 
     }
   };
@@ -261,20 +249,21 @@ function App() {
                       <div>
                         {postEvidences.length > 0 && selectedItemIndex >= 0 && selectedItemIndex === item && (
                           <ul className="list-container">
-                            {postEvidences.map((obj, item) => (
-                              <li key={item} className="list-item">{obj.postMsg}
+                            {postEvidences.map((item) => (
+                              <li key={item.postAddress} className="list-item">{item.postMsg}
                                 <div className="star-rating">
                                   {[...Array(5)].map((star, index) => {
                                     return (
                                       <span
                                         key={index}
                                         className={index < star ? 'on' : 'off'}
-                                        onClick={() => handleStarClick(obj.postAddress, index + 1)}
+                                        onClick={() => handleStarClick(item.postAddress, index + 1)}
                                       >
                                         ★
                                       </span>
                                     );
                                   })}
+                                  
                                   <ReactModal
                                     isOpen={showPopup}
                                     contentLabel="Star Rating Selected"
@@ -288,12 +277,12 @@ function App() {
                                     </div>
                                   </ReactModal>
                                 </div>
-
                               </li>
+                              
                             ))}
                           </ul>
                         )}
-                        {postEvidences.length === 0 && <p>No items found.</p>}
+                        {postEvidences.length === 0 && <p>No evidences are posted yet to fact check!.</p>}
                       </div>
 
                     </div>
