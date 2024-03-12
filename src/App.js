@@ -227,8 +227,9 @@ function App() {
 
                   <ul className="list">
                     {misInfoTopicAddresses.map((address, item) => <div>
-                      <li className="list-item" key={item}>Unverified Claim # {item + 1}</li>
-                      <button onClick={() => fetchAvailableMisInfos(address, signer, item)}>Click to fetch the misinformation post!</button>
+                      <li className="list-item-label" key={item}>Unverified Claim # {item + 1}</li>
+                      <button onClick={() => fetchAvailableMisInfos(address, signer, item)}
+                      className="button is-black is-medium">Click to fetch the fact-check claim!</button>
 
                       {selectedItemIndex >= 0 && selectedItemIndex === item && (
                         <div>
@@ -282,7 +283,7 @@ function App() {
                             ))}
                           </ul>
                         )}
-                        {postEvidences.length === 0 && <p>No evidences are posted yet to fact check!.</p>}
+                        {postEvidences.length === 0 && <p className="content is-medium">No evidences are posted yet to fact check!/Click above "Button" to fetch claims!</p>}
                       </div>
 
                     </div>
