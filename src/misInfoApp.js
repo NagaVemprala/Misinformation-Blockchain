@@ -3,28 +3,22 @@ const appABI = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint16",
-				"name": "reward",
-				"type": "uint16"
-			},
-			{
 				"internalType": "string",
-				"name": "misInfoMessage",
+				"name": "post",
 				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "funder",
-				"type": "address"
-			},
-			{
-				"internalType": "uint8",
-				"name": "_alpha",
-				"type": "uint8"
 			}
 		],
-		"stateMutability": "payable",
-		"type": "constructor"
+		"name": "createPost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "criticRewards",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -45,23 +39,95 @@ const appABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "post",
-				"type": "string"
-			}
-		],
-		"name": "createPost",
+		"inputs": [],
+		"name": "debunkerRewards",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "criticRewards",
+		"name": "getAverageRating",
 		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint16",
+				"name": "reward",
+				"type": "uint16"
+			},
+			{
+				"internalType": "string",
+				"name": "misInfoMessage",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "funder",
+				"type": "address"
+			},
+			{
+				"internalType": "uint16",
+				"name": "_alpha",
+				"type": "uint16"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "updateCriticRatings",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "updateDebunkerRatings",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "_debunkingUserAddresses",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "_debunkingUserAddresses1",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -112,10 +178,22 @@ const appABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "debunkerRewards",
-		"outputs": [],
-		"stateMutability": "payable",
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "debunkingUserAddresses",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -162,6 +240,60 @@ const appABI = [
 				"internalType": "uint16",
 				"name": "rewardProportion",
 				"type": "uint16"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "isFundingManager",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "criticOwner",
+				"type": "address"
+			}
+		],
+		"name": "sendCriticStructure",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "criticUserAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "criticUserEligibleForRewards",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint16",
+						"name": "totalCriticRatings",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "rewardProportion",
+						"type": "uint16"
+					}
+				],
+				"internalType": "struct MisinformationApp.criticUser",
+				"name": "",
+				"type": "tuple"
 			}
 		],
 		"stateMutability": "view",
@@ -244,6 +376,26 @@ const appABI = [
 				"internalType": "string",
 				"name": "",
 				"type": "string"
+			},
+			{
+				"internalType": "uint16",
+				"name": "",
+				"type": "uint16"
+			},
+			{
+				"internalType": "uint16",
+				"name": "",
+				"type": "uint16"
+			},
+			{
+				"internalType": "uint16",
+				"name": "",
+				"type": "uint16"
+			},
+			{
+				"internalType": "uint16",
+				"name": "",
+				"type": "uint16"
 			}
 		],
 		"stateMutability": "view",
@@ -322,20 +474,6 @@ const appABI = [
 		],
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "updateCriticRatings",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "updateDebunkerRatings",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	}
 ];
 
@@ -346,9 +484,9 @@ const appABI = [
 //    )
 //}
 
-const appContract = (provider, contract) => {
+const appContract = (provider) => {
     return new ethers.Contract(
-        contract,
+        "0x89E4cba7B6521a61204C76D8dA25d5f8f2cc2eCe", //
 		appABI,
 		provider
     )
